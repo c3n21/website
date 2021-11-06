@@ -1,13 +1,20 @@
-version: "3.3"
+version: "3.7"
+networks:
+        reverse:
+                name: reverse_proxy_net
 services:
-  webserver:
-    build:
-      context: .
-      dockerfile: ./docker/nginx/Dockerfile
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./html:/usr/share/nginx/html:ro
-      - ./docker/nginx/ssl:/etc/ssl
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        reverse_proxy:
+                hostname: reverse_proxy
+                build:
+                        context: .
+                        dockerfile: ./docker/nginx/Dockerfile
+                ports:
+                        - "80:80"
+                        - "443:443"
+                volumes:
+                        - ./html:/usr/share/nginx/html:ro
+                        - ./docker/nginx/ssl:/etc/ssl/private
+                        - ./docker/nginx/nginx_etc:/etc/nginx
+                networks:
+                        - reverse
+                        - default
